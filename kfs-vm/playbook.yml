@@ -1,0 +1,30 @@
+# playbook.yml
+---
+- name: KFS VM setup
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - build-essential
+          - gcc
+          - nasm
+          - grub-pc-bin
+          - qemu-system-x86
+          - gdb
+          - make
+        state: present
+
+    - name: Create kfs working directory
+      file:
+        path: /home/vagrant/kfs
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: '0755'

@@ -1,0 +1,23 @@
+# Vagrantfile
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bookworm64"
+  config.vm.hostname = "kfs-vm"
+
+  # Synchronisation du dossier courant
+  config.vm.synced_folder ".", "/home/vagrant/kfs"
+
+  # Configuration réseau local (optionnel)
+  config.vm.network "private_network", type: "dhcp"
+
+  # Configuration des ressources
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "1024"
+    vb.cpus = 1
+  end
+
+  # Provisioning avec Ansible
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "/home/vagrant/kfs/playbook.yml"
+    ansible.inventory_path = "/home/vagrant/kfs/inventory"
+  end
+end
