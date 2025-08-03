@@ -1,0 +1,15 @@
+#!/bin/sh
+
+PATTERN="^(feat|fix|chore|docs|style|refactor|perf|test|revert)(\\(.+\\))?: .+"
+
+commit_msg_file=$1
+commit_msg=$(head -n1 "$commit_msg_file")
+
+if echo "$commit_msg" | grep -qE "$PATTERN"; then
+  exit 0
+else
+  echo "❌ Invalid commit message:"
+  echo "   \"$commit_msg\""
+  echo "✅ Use format: <type>(optional-scope): <description>"
+  exit 1
+fi
