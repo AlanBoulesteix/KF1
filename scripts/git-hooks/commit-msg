@@ -11,5 +11,6 @@ else
   echo "❌ Invalid commit message:"
   echo "   \"$commit_msg\""
   echo "✅ Use format: <type>(optional-scope): <description>"
+  echo "Please refer to this docs: https://www.conventionalcommits.org/en/v1.0.0/"
   exit 1
 fi
