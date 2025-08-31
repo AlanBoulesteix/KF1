@@ -15,3 +15,5 @@ RUN apt update && apt install -y \
     rm -rf /var/lib/apt/lists/*
 
 COPY . .
+
+RUN bash ./scripts/create_iso.sh
