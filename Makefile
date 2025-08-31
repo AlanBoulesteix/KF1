@@ -15,6 +15,9 @@ start:
 stop:
 	@docker stop $(CONTAINER_NAME) 2>/dev/null || true
 
+cp: start
+	docker cp $(CONTAINER_NAME):/workspace/myos.iso .
+
 re: rm all
 
 rm: 
@@ -29,4 +32,4 @@ nuke: stop
 install_hooks:
 	@bash scripts/setup-git-hooks.sh
 
-.PHONY: all build run start stop re nuke install_hooks
+.PHONY: all build run start stop cp re rm nuke install_hooks
