@@ -18,4 +18,4 @@ cp $boot_dir/myos.bin $iso_dir/myos.bin
 cp $boot_dir/grub.cfg $iso_dir/grub/grub.cfg
 
 # Permet de generer un iso
-grub-mkrescue -o myos.iso $iso_dir
+grub-mkrescue -o myos.iso isodir
