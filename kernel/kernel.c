@@ -43,6 +43,20 @@ static inline uint16_t vga_entry(unsigned char uc, uint8_t color)
 	return (uint16_t)uc | (uint16_t)color << 8;
 }
 
+static inline void outb(uint16_t port, uint8_t val)
+{
+	__asm__ volatile("outb %0, %1" : : "a"(val), "Nd"(port));
+}
+
+static inline uint8_t inb(uint16_t port)
+{
+	uint8_t ret;
+	__asm__ volatile("inb %1, %0"
+									 : "=a"(ret)
+									 : "Nd"(port));
+	return ret;
+}
+
 size_t strlen(const char *str)
 {
 	size_t len = 0;
@@ -59,6 +73,16 @@ size_t terminal_row;
 size_t terminal_column;
 uint8_t terminal_color;
 uint16_t *terminal_buffer = (uint16_t *)VGA_MEMORY;
+
+void update_cursor_pos(size_t x, size_t y)
+{
+	size_t pos = y * VGA_WIDTH + x;
+	outb(0x3D4, 0x0F);
+	outb(0x3D5, pos & 0xFF);
+
+	outb(0x3D4, 0x0E);
+	outb(0x3D5, (pos >> 8) & 0xFF);
+}
 
 void terminal_initialize(void)
 {
@@ -111,7 +135,7 @@ void indent_terminal_rows()
 void terminal_putnewline()
 {
 	if (++terminal_row == VGA_HEIGHT)
-		indant_terminal_rows();
+		indent_terminal_rows();
 	terminal_column = 0;
 }
 
@@ -126,9 +150,10 @@ void terminal_putchar(char c)
 		{
 			terminal_column = 0;
 			if (++terminal_row == VGA_HEIGHT)
-				indant_terminal_rows();
+				indent_terminal_rows();
 		}
 	}
+	update_cursor_pos(terminal_column, terminal_row);
 }
 
 void terminal_write(const char *data, size_t size)
@@ -144,9 +169,6 @@ void terminal_writestring(const char *data)
 
 void kernel_main(void)
 {
-	/* Initialize terminal interface */
 	terminal_initialize();
-
-	/* Newline support is left as an exercise. */
-	terminal_writestring("Hello, kernel World!\n");
+	terminal_writestring("          @@@@@@@ @@@@@@@@@@@\n        @@@@@@@@  @@@@@@@@@@@\n      @@@@@@@@    @@@  @@@@@@\n     @@@@@@@          @@@@@@@\n   @@@@@@@          @@@@@@@@ \n @@@@@@@           @@@@@@@   \n @@@@@@@@@@@@@@@@ @@@@@@@  @@\n @@@@@@@@@@@@@@@@ @@@@@@@@@@@\n @@@@@@@@@@@@@@@@ @@@@@@@@@@@\n           @@@@@@            \n            @@@@@@            \n\n\n");
 }
