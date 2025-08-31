@@ -87,7 +87,7 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 	terminal_buffer[index] = vga_entry(c, color);
 }
 
-void indant_terminal_rows()
+void indent_terminal_rows()
 {
 	int y = -1;
 	while (++y < VGA_HEIGHT - 1)
