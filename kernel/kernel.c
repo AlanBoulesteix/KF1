@@ -87,13 +87,16 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 	terminal_buffer[index] = vga_entry(c, color);
 }
 
-void indant_terminal_rows() {
+void indant_terminal_rows()
+{
 	int y = -1;
-	while (++y < VGA_HEIGHT - 1) {
+	while (++y < VGA_HEIGHT - 1)
+	{
 		int x = -1;
-		while (++x < VGA_WIDTH) {
+		while (++x < VGA_WIDTH)
+		{
 			size_t index_dest = y * VGA_WIDTH + x;
-			size_t index_src = (y +1) * VGA_WIDTH + x;
+			size_t index_src = (y + 1) * VGA_WIDTH + x;
 			terminal_buffer[index_dest] = terminal_buffer[index_src];
 		}
 	}
@@ -107,22 +110,23 @@ void indant_terminal_rows() {
 
 void terminal_putnewline()
 {
-	if (++terminal_row == VGA_HEIGHT) indant_terminal_rows();
+	if (++terminal_row == VGA_HEIGHT)
+		indant_terminal_rows();
 	terminal_column = 0;
 }
 
 void terminal_putchar(char c)
 {
-	if (c == '\n') {
+	if (c == '\n')
 		terminal_putnewline();
-	}
 	else
 	{
 		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
 		if (++terminal_column == VGA_WIDTH)
 		{
 			terminal_column = 0;
-			if (++terminal_row == VGA_HEIGHT) indant_terminal_rows();
+			if (++terminal_row == VGA_HEIGHT)
+				indant_terminal_rows();
 		}
 	}
 }
