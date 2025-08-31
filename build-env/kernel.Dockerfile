@@ -14,4 +14,4 @@ RUN apt update && apt install -y \
     qemu-system && \
     rm -rf /var/lib/apt/lists/*
 
-COPY KFS .
+COPY . .
