@@ -1,4 +1,5 @@
-#include "tty.h"
+#include "../../includes/tty.h"
+#include "../../includes/utils.h"
 
 static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg)
 {
@@ -90,7 +91,7 @@ void indent_terminal_rows()
 void terminal_putnewline()
 {
 	if (++terminal_row == VGA_HEIGHT)
-		indant_terminal_rows();
+		indent_terminal_rows();
 	terminal_column = 0;
 }
 
@@ -105,7 +106,7 @@ void terminal_putchar(char c)
 		{
 			terminal_column = 0;
 			if (++terminal_row == VGA_HEIGHT)
-				indant_terminal_rows();
+				indent_terminal_rows();
 		}
 	}
 	update_cursor_pos(terminal_column, terminal_row);
@@ -115,12 +116,12 @@ int terminal_write(const char *data, size_t size)
 {
 	for (size_t i = 0; i < size; i++)
 		terminal_putchar(data[i]);
-	return size
+	return size;
 }
 
 int terminal_writestring(const char *data)
 {
-	int	data_len = strlen(data);
+	int	len_data = strlen(data);
 
 	terminal_write(data, len_data);
 

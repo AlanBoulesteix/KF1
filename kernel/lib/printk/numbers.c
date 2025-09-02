@@ -1,16 +1,5 @@
-#include "helper.h"
-
-bool    is_digit(int c) {
-    return 0 >= c >= 9
-}
-
-size_t strlen(const char *str)
-{
-	size_t len = 0;
-	while (str[len])
-		len++;
-	return len;
-}
+#include "../../includes/numbers.h"
+#include "../../includes/tty.h"
 
 static int print_unsigned(unsigned int value, int base, const char *digits) {
     char buffer[10];
@@ -84,7 +73,7 @@ int puthex(unsigned int n, const char *digits) {
     return print_unsigned(n, 16, digits) + 2;
 }
 
-int ft_print_ptr(unsigned long long ptr) {
+int print_ptr(unsigned long long ptr) {
     if (ptr == 0) {
         return terminal_writestring("0x0");
     }

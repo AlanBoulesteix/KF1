@@ -6,7 +6,7 @@
 #endif
 
 #define KERN_DEFAULT    6
-#define KERN_SOH        "\001"
+#define KERN_SOH        '\001'
 #define KERN_EMERG      KERN_SOH "0"
 #define KERN_ALERT      KERN_SOH "1"
 #define KERN_CRIT       KERN_SOH "2"
@@ -16,7 +16,7 @@
 #define KERN_INFO       KERN_SOH "6"
 #define KERN_DEBUG      KERN_SOH "7"
 
-#ifndef pr_fmt(fmt)
+#ifndef pr_fmt
 #   define pr_fmt(fmt) "[MY KERNEL] " fmt 
 #endif
 
@@ -35,9 +35,8 @@
 #define pr_debug(fmt, ...) \
     printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
 
+#include <stdarg.h>
+
 int printk(const char* fmt, ...);
 
 #endif
-printk(KERN_CRIT "help%s", str)
-
-pr_crit(pr_fmt(fmt))

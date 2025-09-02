@@ -1,7 +1,5 @@
 FROM lfreydie/i386-elf-kfs
 
-WORKDIR /workspace
-
 RUN apt update && apt install -y \
     binutils \
     nasm \
@@ -11,9 +9,9 @@ RUN apt update && apt install -y \
     grub-common \
     xorriso \
     elfutils \
+    make \
     qemu-system && \
     rm -rf /var/lib/apt/lists/*
 
-COPY . .
-
-RUN bash ./scripts/create_iso.sh
+VOLUME /workspace
+WORKDIR /workspace

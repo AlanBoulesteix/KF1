@@ -1,35 +1,68 @@
-CONTAINER_NAME=kfs-container
-IMAGE_NAME=kfs
+TARGET			:= kfs.iso
+ARCH			:= i386
+IMAGE_NAME		:= kfs-buildenv
 
-all: build run
+BUILD_DIR		:= build
+BOOT_SRC		:= boot
+KERNEL_SRC		:= kernel
+KERNEL_BUILD	:= $(BUILD_DIR)/kernel
+KERNEL_INC		:= $(KERNEL_SRC)/includes
+
+# Files
+LINKER			:= $(BOOT_SRC)/linker.ld
+ASM_SRCS		:= $(shell find . -name "*.s")
+ASM_OBJS		:= $(patsubst ./%.s,$(BUILD_DIR)/%.o,$(ASM_SRCS))
+KERNEL_BIN		:= $(BUILD_DIR)/kernel.bin
+ISO_DIR			:= $(BUILD_DIR)/iso
+GRUB_CFG		:= $(BOOT_SRC)/grub.cfg
+
+# Get all C source files recursively
+KERNEL_SRCS		:= $(shell find $(KERNEL_SRC) -name "*.c")
+KERNEL_OBJS		:= $(patsubst $(KERNEL_SRC)/%.c,$(KERNEL_BUILD)/%.o,$(KERNEL_SRCS))
+
+# Compiler settings
+CC				:= $(ARCH)-elf-gcc
+CFLAGS			:= -std=gnu99 -ffreestanding -O2 -g -Wall -Wextra -fno-builtin -fno-stack-protector -nostdlib -nodefaultlibs  
+LDFLAGS			:= -T $(LINKER) -nostdlib -nodefaultlibs
+ASM				:= $(ARCH)-elf-as
 
 build:
 	docker build -f build-env/kernel.Dockerfile -t $(IMAGE_NAME) .
+	docker run --rm -v .:/workspace kfs-buildenv make $(TARGET)
+
+# Create the iso file with grub installed
+$(TARGET): $(KERNEL_BIN)
+	@mkdir -p $(ISO_DIR)/boot
+	cp $(GRUB_CFG) $(ISO_DIR)/boot/grub.cfg
+	cp $(KERNEL_BIN) $(ISO_DIR)/boot/kernel.bin
+	grub-mkrescue -o $(TARGET) $(ISO_DIR)
+
+# Link object files to create the kernel binary
+$(KERNEL_BIN): $(ASM_OBJS) $(KERNEL_OBJS)
+	@mkdir -p $(dir $@)
+	$(CC) $(LDFLAGS) -o $@ $(ASM_OBJS) $(KERNEL_OBJS) -lgcc
+
+# Assemble each asm file
+$(BUILD_DIR)/%.o: %.s
+	@mkdir -p $(dir $@)
+	$(ASM) $< -o $@
+
+# Compile kernel c files
+$(KERNEL_BUILD)/%.o: $(KERNEL_SRC)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(KERNEL_INC)
 
 run:
-	docker run -it --name $(CONTAINER_NAME) $(IMAGE_NAME):latest bash
+	kvm $(TARGET)
 
-start:
-	docker start $(CONTAINER_NAME)
+clean:
+	rm -rf $(BUILD_DIR)
+	rm -f $(KERNEL_BIN)
 
-stop:
-	@docker stop $(CONTAINER_NAME) 2>/dev/null || true
+fclean: clean
+	rm -f $(TARGET)
 
-cp: start
-	docker cp $(CONTAINER_NAME):/workspace/myos.iso .
-
-re: rm all
-
-rm: 
-	docker rm -f $(CONTAINER_NAME) 2>/dev/null || true
+dclean: 
 	docker rmi -f $(IMAGE_NAME) 2>/dev/null || true
 
-nuke: stop
-	docker container prune -f
-	docker image prune -a -f
-	docker system prune -a -f
-
-install_hooks:
-	@bash scripts/setup-git-hooks.sh
-
-.PHONY: all build run start stop cp re rm nuke install_hooks
+.PHONY: build run clean fclean dclean

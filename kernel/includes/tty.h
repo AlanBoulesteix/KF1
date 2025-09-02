@@ -40,16 +40,14 @@ enum vga_color
 #define VGA_HEIGHT 25
 #define VGA_MEMORY 0xB8000
 
-static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg);
-static inline uint16_t vga_entry(unsigned char uc, uint8_t color);
-void terminal_initialize(void);
-void terminal_setcolor(uint8_t color);
-void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
-void indent_terminal_rows();
-void terminal_putnewline();
-void terminal_putchar(char c);
-int terminal_write(const char *data, size_t size);
-int terminal_writestring(const char *data);
+void					terminal_initialize(void);
+void					terminal_setcolor(uint8_t color);
+void					terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
+void					indent_terminal_rows();
+void					terminal_putnewline();
+void					terminal_putchar(char c);
+int						terminal_write(const char *data, size_t size);
+int						terminal_writestring(const char *data);
 
 
 #endif
