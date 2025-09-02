@@ -39,8 +39,8 @@ int    printk(const char* fmt, ...){
     if (!fmt)
         return (-1);
     
-    if (fmt[0] == KERN_SOH && is_digit(fmt[1])) {
-        level = fmt[1] - 0;
+    if (fmt[0] == '\001' && is_digit(fmt[1])) {
+        level = fmt[1] - '0';
         fmt += 2;
     }
 
