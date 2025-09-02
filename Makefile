@@ -32,8 +32,8 @@ build:
 
 # Create the iso file with grub installed
 $(TARGET): $(KERNEL_BIN)
-	@mkdir -p $(ISO_DIR)/boot
-	cp $(GRUB_CFG) $(ISO_DIR)/boot/grub.cfg
+	@mkdir -p $(ISO_DIR)/boot/grub
+	cp $(GRUB_CFG) $(ISO_DIR)/boot/grub/grub.cfg
 	cp $(KERNEL_BIN) $(ISO_DIR)/boot/kernel.bin
 	grub-mkrescue -o $(TARGET) $(ISO_DIR)
 
@@ -65,4 +65,6 @@ fclean: clean
 dclean: 
 	docker rmi -f $(IMAGE_NAME) 2>/dev/null || true
 
-.PHONY: build run clean fclean dclean
+re: fclean dclean build
+
+.PHONY: build run clean fclean dclean re

@@ -10,6 +10,7 @@ RUN apt update && apt install -y \
     xorriso \
     elfutils \
     make \
+    tree \
     qemu-system && \
     rm -rf /var/lib/apt/lists/*
 
