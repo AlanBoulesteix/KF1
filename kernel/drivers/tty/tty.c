@@ -1,6 +1,37 @@
 #include "../../includes/tty.h"
 #include "../../includes/utils.h"
 
+size_t terminal_row;
+size_t terminal_column;
+uint8_t terminal_color;
+uint16_t *terminal_buffer = (uint16_t *)VGA_MEMORY;
+struct color_map colors[] = {
+		{"black", VGA_COLOR_BLACK},
+		{"blue", VGA_COLOR_BLUE},
+		{"green", VGA_COLOR_GREEN},
+		{"cyan", VGA_COLOR_CYAN},
+		{"red", VGA_COLOR_RED},
+		{"magenta", VGA_COLOR_MAGENTA},
+		{"brown", VGA_COLOR_BROWN},
+		{"grey_light", VGA_COLOR_LIGHT_GREY},
+		{"grey_dark", VGA_COLOR_DARK_GREY},
+		{"blue_light", VGA_COLOR_LIGHT_BLUE},
+		{"green_light", VGA_COLOR_LIGHT_GREEN},
+		{"cyan_light", VGA_COLOR_LIGHT_CYAN},
+		{"red_light", VGA_COLOR_LIGHT_RED},
+		{"magenta_light", VGA_COLOR_LIGHT_MAGENTA},
+		{"brown_light", VGA_COLOR_LIGHT_BROWN},
+		{"white", VGA_COLOR_WHITE},
+};
+
+static int ft_strcmp(const char *s1, const char *s2)
+{
+	size_t i = 0;
+	while (s1[i] && s1[i] == s2[i])
+		i++;
+	return (unsigned char)s1[i] - (unsigned char)s2[i];
+}
+
 static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg)
 {
 	return fg | bg << 4;
@@ -10,11 +41,6 @@ static inline uint16_t vga_entry(unsigned char uc, uint8_t color)
 {
 	return (uint16_t)uc | (uint16_t)color << 8;
 }
-
-size_t terminal_row;
-size_t terminal_column;
-uint8_t terminal_color;
-uint16_t *terminal_buffer = (uint16_t *)VGA_MEMORY;
 
 static inline void outb(uint16_t port, uint8_t val)
 {
@@ -33,11 +59,11 @@ static inline uint8_t inb(uint16_t port)
 void update_cursor_pos(size_t x, size_t y)
 {
 	size_t pos = y * VGA_WIDTH + x;
-	outb(0x3D4, 0x0F);
-	outb(0x3D5, pos & 0xFF);
+	outb(VGA_CONTROLER_SELECT, VGA_CURSOR_LOW);
+	outb(VGA_CONTROLER_SET, pos & 0xFF);
 
-	outb(0x3D4, 0x0E);
-	outb(0x3D5, (pos >> 8) & 0xFF);
+	outb(VGA_CONTROLER_SELECT, VGA_CURSOR_HIGH);
+	outb(VGA_CONTROLER_SET, (pos >> 8) & 0xFF);
 }
 
 void terminal_initialize(void)
@@ -112,16 +138,58 @@ void terminal_putchar(char c)
 	update_cursor_pos(terminal_column, terminal_row);
 }
 
+bool read_tag(char tag[32])
+{
+	if (ft_strcmp(tag, "reset") == 0)
+	{
+		terminal_setcolor(VGA_COLOR_LIGHT_GREY);
+		return 1;
+	}
+	for (size_t i = 0; i < 16; i++)
+	{
+		if (ft_strcmp(tag, colors[i].name) == 0)
+		{
+			terminal_setcolor(colors[i].vga);
+			return 1;
+		}
+	}
+	return 0;
+}
+
 int terminal_write(const char *data, size_t size)
 {
 	for (size_t i = 0; i < size; i++)
+	{
+		if (data[i] == '[')
+		{
+			char tag[32];
+			size_t j = 0;
+
+			i++;
+			while (data[i + j] && data[i + j] != ']' && j < 31)
+			{
+				tag[j] = data[i + j];
+				j++;
+			}
+			tag[j] = '\0';
+			if (data[i + j] == ']')
+			{
+				if (read_tag(tag))
+					i += j + 1;
+				else
+					i--;
+			}
+			else
+				i--;
+		}
 		terminal_putchar(data[i]);
+	}
 	return size;
 }
 
 int terminal_writestring(const char *data)
 {
-	int	len_data = strlen(data);
+	int len_data = strlen(data);
 
 	terminal_write(data, len_data);
 
