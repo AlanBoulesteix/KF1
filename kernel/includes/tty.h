@@ -42,8 +42,6 @@ struct color_map
 	uint8_t vga;
 };
 
-extern struct color_map colors[];
-
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define VGA_MEMORY 0xB8000
