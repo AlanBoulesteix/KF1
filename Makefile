@@ -1,9 +1,9 @@
-TARGET				:= kfs.iso
-ARCH					:= i386
+TARGET			:= kfs.iso
+ARCH			:= i386
 IMAGE_NAME		:= kfs-buildenv
 
-BUILD_DIR			:= build
-BOOT_SRC			:= boot
+BUILD_DIR		:= build
+BOOT_SRC		:= boot
 KERNEL_SRC		:= kernel
 KERNEL_BUILD	:= $(BUILD_DIR)/kernel
 KERNEL_INC		:= $(KERNEL_SRC)/includes
