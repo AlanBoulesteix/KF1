@@ -35,15 +35,16 @@ _start:
 
 .reload_CS:
     # Reload data segment registers:
-    mov %AX, 0x10 # 0x10 is a stand-in for your data segment
-    mov %DS, %AX
-    mov %ES, %AX
-    mov %FS, %AX
-    mov %GS, %AX
-    mov %SS, %AX
+    mov $DATA_SEG, %AX
+    mov %AX, %DS
+    mov %AX, %ES
+    mov %AX, %FS
+    mov %AX, %GS
+    mov %AX, %SS
 
     call kernel_main
 
+    cli
 1:  hlt
     jmp 1b
 
