@@ -80,3 +80,23 @@ int print_ptr(unsigned long long ptr) {
 
 	return print_unsigned_long_long(ptr, 10, "0123456789");
 }
+
+int print_bits_32(uint32_t value) {
+    for (int i = 31; i >= 0; i--) {
+        if ((i+1) % 4 == 0 && i != 31)
+            terminal_putchar(' ');
+        uint32_t bit = (value >> i) & 1;
+        terminal_putchar(bit ? '1' : '0');
+    }
+    return 32;
+}
+ 
+int print_bits_64(uint64_t value) {
+    for (int i = 63; i >= 0; i--) {
+        if ((i+1) % 4 == 0 && i != 63)
+            terminal_putchar(' ');
+        uint64_t bit = (value >> i) & 1;
+        terminal_putchar(bit ? '1' : '0');
+    }
+    return 64;
+}

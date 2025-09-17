@@ -27,6 +27,10 @@ static int printk_arg(const char *fmt, int i, va_list ap)
     }
     else if (fmt[i + 1] == 'p')
         return (print_ptr(va_arg(ap, unsigned long long)));
+    else if (fmt[i + 1] == 'b')
+        return (print_bits_32(va_arg(ap, uint32_t)));
+    else if (fmt[i + 1] == 'B')
+        return (print_bits_64(va_arg(ap, uint64_t)));
     else
         return (0);
 }
@@ -52,7 +56,7 @@ int printk(const char *fmt, ...)
         va_start(ap, fmt);
         while (fmt[i])
         {
-            if (fmt[i] == '%' && strchr("cspdiuxX%", fmt[i + 1]))
+            if (fmt[i] == '%' && ft_strchr("cspduxXbB%", fmt[i + 1]))
             {
                 ret += printk_arg(fmt, i, ap);
                 i++;
