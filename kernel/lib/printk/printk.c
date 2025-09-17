@@ -3,11 +3,12 @@
 #include "../../includes/tty.h"
 #include "../../includes/utils.h"
 
-static int	printk_arg(const char *fmt, int i, va_list ap)
+static int printk_arg(const char *fmt, int i, va_list ap)
 {
     if (fmt[i + 1] == '%')
         return (terminal_write(&fmt[i + 1], 1));
-    else if (fmt[i + 1] == 'c') {
+    else if (fmt[i + 1] == 'c')
+    {
         terminal_putchar(va_arg(ap, int));
         return 1;
     }
@@ -30,25 +31,28 @@ static int	printk_arg(const char *fmt, int i, va_list ap)
         return (0);
 }
 
-int    printk(const char* fmt, ...){
+int printk(const char *fmt, ...)
+{
     va_list ap;
-    int     level = KERN_DEFAULT;
-    int     i = 0;
-    int     ret = 0;
+    int level = KERN_DEFAULT;
+    int i = 0;
+    int ret = 0;
 
     if (!fmt)
         return (-1);
-    
-    if (fmt[0] == '\001' && is_digit(fmt[1])) {
+
+    if (fmt[0] == '\001' && is_digit(fmt[1]))
+    {
         level = fmt[1] - '0';
         fmt += 2;
     }
 
-    if (level <= console_loglevel) {
+    if (level <= console_loglevel)
+    {
         va_start(ap, fmt);
         while (fmt[i])
         {
-            if (fmt[i] == '%' && ft_strchr("cspdiuxX%", fmt[i + 1]))
+            if (fmt[i] == '%' && strchr("cspdiuxX%", fmt[i + 1]))
             {
                 ret += printk_arg(fmt, i, ap);
                 i++;

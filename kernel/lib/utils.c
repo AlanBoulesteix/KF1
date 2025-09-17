@@ -1,7 +1,8 @@
 #include "../includes/utils.h"
 
-bool    is_digit(int c) {
-    return (c >= '0' && c <= '9');
+bool is_digit(int c)
+{
+	return (c >= '0' && c <= '9');
 }
 
 size_t strlen(const char *str)
@@ -12,9 +13,9 @@ size_t strlen(const char *str)
 	return len;
 }
 
-char	*ft_strchr(const char *s, int c)
+char *strchr(const char *s, int c)
 {
-	unsigned int	i;
+	unsigned int i;
 
 	i = 0;
 	while (s[i])
@@ -26,4 +27,12 @@ char	*ft_strchr(const char *s, int c)
 	if ((char)c == s[i])
 		return ((char *)&s[i]);
 	return (NULL);
+}
+
+int strcmp(const char *s1, const char *s2)
+{
+	size_t i = 0;
+	while (s1[i] && s1[i] == s2[i])
+		i++;
+	return (unsigned char)s1[i] - (unsigned char)s2[i];
 }

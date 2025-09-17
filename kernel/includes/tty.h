@@ -1,5 +1,5 @@
 #ifndef TTY_H
-#   define TTY_H
+#define TTY_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -36,18 +36,28 @@ enum vga_color
 	VGA_COLOR_WHITE = 15,
 };
 
+struct color_map
+{
+	const char *name;
+	uint8_t vga;
+};
+
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define VGA_MEMORY 0xB8000
 
-void					terminal_initialize(void);
-void					terminal_setcolor(uint8_t color);
-void					terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
-void					indent_terminal_rows();
-void					terminal_putnewline();
-void					terminal_putchar(char c);
-int						terminal_write(const char *data, size_t size);
-int						terminal_writestring(const char *data);
+#define VGA_CONTROLER_SELECT 0x3D4
+#define VGA_CONTROLER_SET 0x3D5
+#define VGA_CURSOR_LOW 0x0F
+#define VGA_CURSOR_HIGH 0x0E
 
+void terminal_initialize(void);
+void terminal_setcolor(uint8_t color);
+void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
+void indent_terminal_rows();
+void terminal_putnewline();
+void terminal_putchar(char c);
+int terminal_write(const char *data, size_t size);
+int terminal_writestring(const char *data);
 
 #endif
