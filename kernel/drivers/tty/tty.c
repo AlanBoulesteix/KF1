@@ -24,14 +24,6 @@ struct color_map colors[] = {
 		{"white", VGA_COLOR_WHITE},
 };
 
-static int strcmp(const char *s1, const char *s2)
-{
-	size_t i = 0;
-	while (s1[i] && s1[i] == s2[i])
-		i++;
-	return (unsigned char)s1[i] - (unsigned char)s2[i];
-}
-
 static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg)
 {
 	return fg | bg << 4;
@@ -138,7 +130,7 @@ void terminal_putchar(char c)
 	update_cursor_pos(terminal_column, terminal_row);
 }
 
-bool read_tag(char tag[32])
+static bool read_tag(char tag[32])
 {
 	if (strcmp(tag, "reset") == 0)
 	{
