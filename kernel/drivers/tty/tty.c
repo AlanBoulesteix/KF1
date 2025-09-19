@@ -1,4 +1,5 @@
 #include "../../includes/tty.h"
+#include "../../includes/io.h"
 #include "../../includes/utils.h"
 
 size_t terminal_row;
@@ -32,20 +33,6 @@ static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg)
 static inline uint16_t vga_entry(unsigned char uc, uint8_t color)
 {
 	return (uint16_t)uc | (uint16_t)color << 8;
-}
-
-static inline void outb(uint16_t port, uint8_t val)
-{
-	__asm__ volatile("outb %0, %1" : : "a"(val), "Nd"(port));
-}
-
-static inline uint8_t inb(uint16_t port)
-{
-	uint8_t ret;
-	__asm__ volatile("inb %1, %0"
-									 : "=a"(ret)
-									 : "Nd"(port));
-	return ret;
 }
 
 void update_cursor_pos(size_t x, size_t y)

@@ -56,7 +56,7 @@ int printk(const char *fmt, ...)
         va_start(ap, fmt);
         while (fmt[i])
         {
-            if (fmt[i] == '%' && ft_strchr("cspduxXbB%", fmt[i + 1]))
+            if (fmt[i] == '%' && strchr("cspduxXbB%", fmt[i + 1]))
             {
                 ret += printk_arg(fmt, i, ap);
                 i++;
