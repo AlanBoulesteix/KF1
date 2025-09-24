@@ -1,5 +1,7 @@
 #pragma once
 
-inline void outb(uint16_t port, uint8_t val);
-inline uint8_t inb(uint16_t port);
-inline void io_wait(void);
+#include <stdint.h>
+
+void outb(uint16_t port, uint8_t val);
+uint8_t inb(uint16_t port);
+void io_wait(void);
