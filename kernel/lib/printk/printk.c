@@ -1,7 +1,7 @@
 #include "../../includes/printk.h"
 #include "../../includes/numbers.h"
 #include "../../includes/tty.h"
-#include "../../includes/utils.h"
+#include "../../includes/klib.h"
 
 static int printk_arg(const char *fmt, int i, va_list ap)
 {
