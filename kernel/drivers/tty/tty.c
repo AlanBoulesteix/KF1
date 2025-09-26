@@ -1,10 +1,6 @@
 #include "../../includes/tty.h"
-<<<<<<< Updated upstream
-#include "../../includes/utils.h"
-=======
 #include "../../includes/io.h"
 #include "../../includes/klib.h"
->>>>>>> Stashed changes
 
 uint32_t terminal_row;
 uint32_t terminal_column;
@@ -39,25 +35,7 @@ static inline uint16_t vga_entry(unsigned char uc, uint8_t color)
 	return (uint16_t)uc | (uint16_t)color << 8;
 }
 
-<<<<<<< Updated upstream
-static inline void outb(uint16_t port, uint8_t val)
-{
-	__asm__ volatile("outb %0, %1" : : "a"(val), "Nd"(port));
-}
-
-static inline uint8_t inb(uint16_t port)
-{
-	uint8_t ret;
-	__asm__ volatile("inb %1, %0"
-									 : "=a"(ret)
-									 : "Nd"(port));
-	return ret;
-}
-
-void update_cursor_pos(size_t x, size_t y)
-=======
 void update_cursor_pos(uint32_t x, uint32_t y)
->>>>>>> Stashed changes
 {
 	uint32_t pos = y * VGA_WIDTH + x;
 	outb(VGA_CONTROLER_SELECT, VGA_CURSOR_LOW);
