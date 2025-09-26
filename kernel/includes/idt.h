@@ -1,7 +1,6 @@
 #pragma once
 
-#include <stdint.h>
-#include <stdbool.h>
+#include "klib.h"
 
 #define IDT_MAX_DESCRIPTORS 256
 

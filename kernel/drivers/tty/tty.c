@@ -1,9 +1,9 @@
 #include "../../includes/tty.h"
 #include "../../includes/io.h"
-#include "../../includes/utils.h"
+#include "../../includes/klib.h"
 
-size_t terminal_row;
-size_t terminal_column;
+uint32_t terminal_row;
+uint32_t terminal_column;
 uint8_t terminal_color;
 uint16_t *terminal_buffer = (uint16_t *)VGA_MEMORY;
 struct color_map colors[] = {
@@ -35,9 +35,9 @@ static inline uint16_t vga_entry(unsigned char uc, uint8_t color)
 	return (uint16_t)uc | (uint16_t)color << 8;
 }
 
-void update_cursor_pos(size_t x, size_t y)
+void update_cursor_pos(uint32_t x, uint32_t y)
 {
-	size_t pos = y * VGA_WIDTH + x;
+	uint32_t pos = y * VGA_WIDTH + x;
 	outb(VGA_CONTROLER_SELECT, VGA_CURSOR_LOW);
 	outb(VGA_CONTROLER_SET, pos & 0xFF);
 
@@ -51,11 +51,11 @@ void terminal_initialize(void)
 	terminal_column = 0;
 	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
 
-	for (size_t y = 0; y < VGA_HEIGHT; y++)
+	for (uint32_t y = 0; y < VGA_HEIGHT; y++)
 	{
-		for (size_t x = 0; x < VGA_WIDTH; x++)
+		for (uint32_t x = 0; x < VGA_WIDTH; x++)
 		{
-			const size_t index = y * VGA_WIDTH + x;
+			const uint32_t index = y * VGA_WIDTH + x;
 			terminal_buffer[index] = vga_entry(' ', terminal_color);
 		}
 	}
@@ -66,9 +66,9 @@ void terminal_setcolor(uint8_t color)
 	terminal_color = color;
 }
 
-void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
+void terminal_putentryat(char c, uint8_t color, uint32_t x, uint32_t y)
 {
-	const size_t index = y * VGA_WIDTH + x;
+	const uint32_t index = y * VGA_WIDTH + x;
 	terminal_buffer[index] = vga_entry(c, color);
 }
 
@@ -80,14 +80,14 @@ void indent_terminal_rows()
 		int x = -1;
 		while (++x < VGA_WIDTH)
 		{
-			size_t index_dest = y * VGA_WIDTH + x;
-			size_t index_src = (y + 1) * VGA_WIDTH + x;
+			uint32_t index_dest = y * VGA_WIDTH + x;
+			uint32_t index_src = (y + 1) * VGA_WIDTH + x;
 			terminal_buffer[index_dest] = terminal_buffer[index_src];
 		}
 	}
-	for (size_t x = 0; x < VGA_WIDTH; x++)
+	for (uint32_t x = 0; x < VGA_WIDTH; x++)
 	{
-		const size_t index = y * VGA_WIDTH + x;
+		const uint32_t index = y * VGA_WIDTH + x;
 		terminal_buffer[index] = vga_entry(' ', terminal_color);
 	}
 	terminal_row = VGA_HEIGHT - 1;
@@ -124,7 +124,7 @@ static bool read_tag(char tag[32])
 		terminal_setcolor(VGA_COLOR_LIGHT_GREY);
 		return 1;
 	}
-	for (size_t i = 0; i < 16; i++)
+	for (uint32_t i = 0; i < 16; i++)
 	{
 		if (strcmp(tag, colors[i].name) == 0)
 		{
@@ -135,14 +135,14 @@ static bool read_tag(char tag[32])
 	return 0;
 }
 
-int terminal_write(const char *data, size_t size)
+int terminal_write(const char *data, uint32_t size)
 {
-	for (size_t i = 0; i < size; i++)
+	for (uint32_t i = 0; i < size; i++)
 	{
 		if (data[i] == '[')
 		{
 			char tag[32];
-			size_t j = 0;
+			uint32_t j = 0;
 
 			i++;
 			while (data[i + j] && data[i + j] != ']' && j < 31)

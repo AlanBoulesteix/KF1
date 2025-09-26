@@ -4,7 +4,7 @@
 
 void exception_handler() {
     while (true) {
-        __asm__ volatile ("cli; hlt"); // Completely hangs the computer
+        __asm__ volatile ("cli; hlt");
     }
 }
 

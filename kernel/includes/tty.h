@@ -1,9 +1,7 @@
 #ifndef TTY_H
 #define TTY_H
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
+#include "klib.h"
 
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
@@ -53,11 +51,11 @@ struct color_map
 
 void terminal_initialize(void);
 void terminal_setcolor(uint8_t color);
-void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
+void terminal_putentryat(char c, uint8_t color, uint32_t x, uint32_t y);
 void indent_terminal_rows();
 void terminal_putnewline();
 void terminal_putchar(char c);
-int terminal_write(const char *data, size_t size);
+int terminal_write(const char *data, uint32_t size);
 int terminal_writestring(const char *data);
 
 #endif
