@@ -25,6 +25,7 @@ global _start:function (_start.end - _start)
 _start:
     mov esp, stack_top
 
+    cli
     extern init_gdt
     call init_gdt
 
@@ -41,13 +42,16 @@ _start:
     mov GS, AX
     mov SS, AX
 
-    extern kernel_main
-    call kernel_main
+
+    extern PIC_init_protected
+    call PIC_init_protected
     
     extern init_idt
-    call init_idt
+    call init_idt 
 
-    cli
+    extern kernel_main
+    call kernel_main
+
 .hang:	hlt
     jmp .hang
 .end:

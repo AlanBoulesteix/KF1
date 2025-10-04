@@ -1,7 +1,11 @@
-#include "../includes/interrupt_handler.h"
+#include "../includes/io.h"
+#include "../includes/isr.h"
 #include "../includes/printk.h"
 
-void interrupt_handler(stack_reg_t *reg)
+void interrupt_handler(void)
 {
-    printk("int_no %d, error %d, ip %d, cs %d, flags %d, sp %d, ss %d", reg->int_no, reg->err_code, reg->ip, reg->cs, reg->flags, reg->sp, reg->ss);
+    printk("COUCOU");
+    uint8_t scancode = inb(0x60); // lit la touche pressée
+    printk("Key pressed: %x\n", scancode);
+    PIC_sendEOI(1); // dit au PIC qu'on a fini
 }
