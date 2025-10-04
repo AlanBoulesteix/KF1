@@ -40,10 +40,12 @@ _start:
     mov FS, AX
     mov GS, AX
     mov SS, AX
-    
 
     extern kernel_main
     call kernel_main
+    
+    extern init_idt
+    call init_idt
 
     cli
 .hang:	hlt

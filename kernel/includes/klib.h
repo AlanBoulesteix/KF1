@@ -8,6 +8,12 @@ typedef uint8_t         bool;
 typedef unsigned long   uintptr_t;
 typedef long            size_t;
 
+typedef struct stack_reg {
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
+    uint32_t int_no, err_code;
+    uint32_t ip, cs, flags, sp, ss;
+} stack_reg_t;
+
 #define true    1
 #define false   0
 
