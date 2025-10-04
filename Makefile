@@ -10,8 +10,8 @@ KERNEL_INC		:= $(KERNEL_SRC)/includes
 
 # Files
 LINKER			:= $(BOOT_SRC)/linker.ld
-ASM_SRCS		:= $(shell find . -name "*.s")
-ASM_OBJS		:= $(patsubst ./%.s,$(BUILD_DIR)/%.o,$(ASM_SRCS))
+ASM_SRCS		:= $(shell find . -name "*.asm")
+ASM_OBJS		:= $(patsubst ./%.asm,$(BUILD_DIR)/%.asm.o,$(ASM_SRCS))
 KERNEL_BIN		:= $(BUILD_DIR)/kernel.bin
 ISO_DIR			:= $(BUILD_DIR)/iso
 GRUB_CFG		:= $(BOOT_SRC)/grub.cfg
@@ -25,7 +25,8 @@ DEPS					:= $(KERNEL_OBJS:%.o=%.d)
 CC				:= $(ARCH)-elf-gcc
 CFLAGS			:= -std=gnu99 -ffreestanding -O2 -g -Wall -Wextra -fno-builtin -fno-stack-protector -nostdlib -nodefaultlibs -MMD
 LDFLAGS			:= -T $(LINKER) -nostdlib -nodefaultlibs
-ASM				:= $(ARCH)-elf-as
+ASM				:= nasm
+ASM_FLAGS		:= -f elf32
 
 build:
 	docker build -f build-env/kernel.Dockerfile -t $(IMAGE_NAME) .
@@ -44,9 +45,9 @@ $(KERNEL_BIN): $(ASM_OBJS) $(KERNEL_OBJS) $(KERNEL_INC)
 	$(CC) $(LDFLAGS) -o $@ $(ASM_OBJS) $(KERNEL_OBJS) -lgcc
 
 # Assemble each asm file
-$(BUILD_DIR)/%.o: %.s
+$(BUILD_DIR)/%.asm.o: %.asm
 	@mkdir -p $(dir $@)
-	$(ASM) $< -o $@
+	$(ASM) $(ASM_FLAGS) $< -o $@
 
 # Compile kernel c files
 $(KERNEL_BUILD)/%.o: $(KERNEL_SRC)/%.c

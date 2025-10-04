@@ -1,7 +1,7 @@
 #ifndef NUMBERS_H
 #define NUMBERS_H
 
-#include <stdint.h>
+#include "klib.h"
 
 int         putnbr(int n);
 int         putnbr_unsigned(unsigned int n);

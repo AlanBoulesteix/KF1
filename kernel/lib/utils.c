@@ -1,13 +1,13 @@
-#include "../includes/utils.h"
+#include "../includes/klib.h"
 
-bool is_digit(int c)
+bool is_digit(uint32_t c)
 {
 	return (c >= '0' && c <= '9');
 }
 
-size_t strlen(const char *str)
+uint32_t strlen(const char *str)
 {
-	size_t len = 0;
+	uint32_t len = 0;
 	while (str[len])
 		len++;
 	return len;
